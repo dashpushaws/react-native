@@ -1,5 +1,5 @@
-import 'react-native-gesture-handler';
 import React from 'react';
+import 'react-native-gesture-handler';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -14,6 +14,13 @@ import Details from './components/Details'
 
 // https://ionicons.com/
 import Ionicons from 'react-native-vector-icons/Ionicons';
+
+import { createStore } from 'redux'
+import { Provider } from 'react-redux'
+
+import rootReducer from './redux/reducers'
+
+const store = createStore(rootReducer);//-> Provider로 store를 사용할수 있게 함
 
 const Tab = createBottomTabNavigator();
 const HomeStack = createStackNavigator();
@@ -69,18 +76,21 @@ const tabBarOptions= {
 }
 
 export default function App() {
- 
   return (
-    <SafeAreaProvider>
-      <NavigationContainer>
-        <Tab.Navigator screenOptions={screenOptions} tabBarOptions={tabBarOptions}>
-            {/* Navigator 내부에 있는 component들은 매개변수로 navigation을 받을 수 있음 */}
-          <Tab.Screen name="Home" component={HomeStackScreen} />
-          <Tab.Screen name="List" component={ListStackScreen} />
-          <Tab.Screen name="Actions" component={Actions} />
-        </Tab.Navigator>
-      </NavigationContainer>
-    </SafeAreaProvider>
+    <Provider store={store}>
+      {/* <Provider> 내부 요소들은 global state를 사용할수있게됨 */}
+      <SafeAreaProvider>
+        <NavigationContainer>
+          <Tab.Navigator screenOptions={screenOptions} tabBarOptions={tabBarOptions}>
+              {/* Navigator 내부에 있는 component들은 매개변수로 navigation을 받을 수 있음 */}
+            <Tab.Screen name="Home" component={HomeStackScreen} />
+            <Tab.Screen name="List" component={ListStackScreen} />
+            <Tab.Screen name="Actions" component={Actions} />
+            {/*       name 속성은 예약어. navigation.navigate("name") */}
+          </Tab.Navigator>
+        </NavigationContainer>
+      </SafeAreaProvider>
+    </Provider>
   );
 }
 
@@ -91,13 +101,12 @@ export default function App() {
 
 
 
-// 컴포넌트 이용시 썼던 코드
 
 // import { StatusBar } from 'expo-status-bar';
 // import React from 'react';
-// import { StyleSheet, Text, View } from 'react-native';
-// // from 자바스크립트 파일명
-// // from 디렉토리명 -> 디렉토리명만 쓰면 그 하위파일이 실행됨. 디렉토리/index.js
+// import { StyleSheet,  View } from 'react-native';
+// // from 자바스크립트 파일명(.js 안붙인다) or 디렉토리명
+// // 디렉토리명일 경우 그 하위 index.js파일을 가리킴
 
 // // import HelloWorld from './components/HelloWorld'
 // // import Counter from './components/Counter'
@@ -114,10 +123,10 @@ export default function App() {
 //                   // 속성={객체변수}
 //     <View style={styles.container}>
 //       {/* <Text>Open up App.js to start working on your app!</Text> */}
-//       {/* <HelloWrold></HelloWrold> */}
+//       {/* <HelloWorld></HelloWorld> */}
 //       {/* <Counter></Counter> */}
 //       {/* <LotsOfGreetings></LotsOfGreetings> */}
-//       <SimpleList></SimpleList>
+//       {/* <SimpleList></SimpleList> */}
 //       <StatusBar style="auto" />
 //     </View>
 //   );
@@ -128,7 +137,7 @@ export default function App() {
 //   container: {
 //     flex: 1,
 //     backgroundColor: '#fff',
-//     alignItems: 'center',
-//     justifyContent: 'center',
+//     alignItems: 'center', // 세로축으로 센터
+//     justifyContent: 'center', // 가로축으로 센터
 //   },
 // });
